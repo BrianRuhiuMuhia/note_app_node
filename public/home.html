@@ -1,0 +1,23 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Notes</title>
+</head>
+<body>
+    <div class="user-notes"></div>
+    <script>
+        const userNotes=document.querySelector(".user-notes")
+        
+async function getAllNotes()
+{
+    const data=await fetch("/allNotes",{
+        method:"get"
+    })
+    const result=await data.json()
+    return result
+}
+
+    </script>
+</body>
+</html>

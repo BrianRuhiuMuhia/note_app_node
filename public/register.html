@@ -1,0 +1,74 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+</head>
+<body>
+    <form>
+        <label>Name</label>
+        <input type="text" name="person-name" class="name">
+        <label>Email</label>
+        <input type="text" name="person-email" class="email">
+        <label>password</label>
+        <input type="text" name="person-password" class="password">
+        <label>confirm password</label>
+        <input type="text" name="person-confirm-password" class="confirm-password">
+        <button class="submit-btn">Submit</button>
+    </form>
+    <script>
+    
+        const btn=document.querySelector(".submit-btn")
+        const formInputs={
+            name:document.querySelector(".name"),
+            email:document.querySelector(".email"),
+            password:document.querySelector(".password"),
+            confirmPassword:document.querySelector(".confirm-password")
+        }
+        btn.addEventListener("click",function(event)
+        {
+            event.preventDefault()
+            const values={
+                name:formInputs["name"].value,
+                email:formInputs["email"].value,
+                password:formInputs["password"].value,
+                confirmPassword:formInputs["confirmPassword"].value
+            }
+if(checkFields(values))
+{
+    postToServer(values).then((page)=>{
+        if(page)
+        location.href=page
+    })
+}
+else{
+    alert("enter all fields")
+}
+        })
+        async function postToServer(obj)
+        {
+const {redirect} = await fetch("/register",{
+                method:"POST",
+    headers:{
+        "Content-type":"application/json"
+    },
+    body:JSON.stringify(obj)
+            })
+
+return redirect;
+        }
+        function checkFields(obj)
+        {
+            let bool=true
+            for(let key in obj)
+            {
+if(!obj[key])
+{
+    bool=false
+}
+            }
+            return bool
+        }
+    </script>
+</body>
+</html>
