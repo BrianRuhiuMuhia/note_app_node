@@ -1,5 +1,6 @@
 const {db}=require("../database/database.js")
-const {createJsonWebToken,maxLifeSpan}=require("../utils/util.js")
+const {createJsonWebToken,maxLifeSpan,hashPassword,unHashPassword}=require("../utils/util.js")
+let token=undefined;
 function getAllNotes(req,res)
 {
 db.query("select * from notes",(err,result)=>{
@@ -41,6 +42,7 @@ return res.send("register.html")
 function login(req,res)
 {
     const {name,email,password}=req.body
+    console.log(req.body)
     if(!name || !email || !password)
     {
         return res.json({"mssg":"fill all fields"})
@@ -58,21 +60,17 @@ function login(req,res)
                 email:result.rows[0].email,
                 password:result.rows[0].user_password
                }
-               if(password!=user.password)
+            
+               if(email == user.email&&unHashPassword(password,user.password))
                {
-                console.log("incorrect password")
-               }
-               if(email == user.email && password==user.password)
-               {
-                console.log(user)
-                const token=createJsonWebToken(user.id)
-                res.cookie("jwt",token,{maxAge:maxLifeSpan})
-                return res.send("home.html")
+             token=createJsonWebToken(user.id)
+             res.cookie('jwt',token, { maxAge: maxLifeSpan});
+                return res.send({redirect:"/home.html"})
                }
                
             }
             else{
-                console.log("register")
+                return res.send({redirect:"/register.html"})
             }
     }
 })
@@ -80,11 +78,11 @@ function login(req,res)
 function register(req,res)
 {
     const {name,email,password,confirmPassword}=req.body
-    console.log(req.body)
     if(!name || !email || !password || !confirmPassword)
     {
         return res.json({"mssg":"fill all fields"})
     }
+const hashedUserPassword=undefined;
     db.query("select * from users where email= $1",[email],(err,result)=>
     {
         if(err)
@@ -98,19 +96,19 @@ function register(req,res)
             }
             else{
                 let names=name.split(" ")
-                console.log(names)
                 if(password != confirmPassword)
                 {
                     return res.json({"mssg":"passwords don't match"})
                 }
-                db.query("insert into users(first_name,last_name,email,user_password) values($1,$2,$3,$4)",[names[0],names[1],email,password])
-            }
+                const hashedUserPassword=hashPassword(password)
+                db.query("insert into users(first_name,last_name,email,user_password) values($1,$2,$3,$4)",[names[0],names[1],email,hashedUserPassword])
+                return res.send({redirect:"/login.html"})            }
         }
     })
 }
 function logout(req,res)
 {
     res.cookie("jwt",token,{maxAge:0})
-    return res.send("../public/home.html")
+    return res.send("/home.html")
 }
 module.exports={getAllNotes,addNote,deleteNote,loginPage,registerPage,register,login,logout}

@@ -24,16 +24,20 @@ const btn=document.querySelector(".submit-btn")
         }
         btn.addEventListener("click",function(event)
         {
-            
+      event.preventDefault()      
             const values={
                 name:formInputs["name"].value,
                 email:formInputs["email"].value,
                 password:formInputs["password"].value,
                
             }
+
 if(checkFields(values))
 {
-    postToServer(values)
+    postToServer(values).then((page)=>{
+
+        location.href="/home.html"||page
+    })
 
 }
 else{
@@ -42,13 +46,15 @@ else{
         })
         async function postToServer(obj)
         {
-            await fetch("/login",{
+            const {redirect}=await fetch("/login",{
                 method:"POST",
     headers:{
         "Content-type":"application/json"
     },
     body:JSON.stringify(obj)
-            })
+            })          
+            
+            return redirect
         }
         function checkFields(obj)
         {
