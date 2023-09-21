@@ -11,6 +11,30 @@
     </from>
 </body>
 <script>
-   
+   const subBtn=document.querySelector(".sub-btn")
+   const obj={}
+   subBtn.addEventListener("click",function(event)
+   {
+    event.preventDefault()
+    obj["text"]=document.querySelector(".txt-area").value
+  if(obj["text"])
+  {
+    postToServer(obj)
+    return
+  }
+  else{
+    return
+  }
+   })
+   async function postToServer(obj)
+   {
+    const {redirect} = await fetch("/addNote",{
+                method:"POST",
+    headers:{
+        "Content-type":"application/json"
+    },
+    body:JSON.stringify(obj)
+            })
+   }
 </script>
 </html>

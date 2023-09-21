@@ -5,7 +5,7 @@ let token=undefined;
 let currentUser={}
 function getNavPage(req,res)
 {
-return res.render("./home.ejs")
+return res.render("./index.ejs")
 }
 function getAllNotes(req,res)
 {
@@ -26,9 +26,10 @@ return res.render("./addNote.ejs")
 }
 function addNote(req,res)
 {
+
     const {text}=req.body
     db.query("insert into notes(user_text,user_id) values($1,$2)",[text,currentUser.id])
-    return res.redirect("/")
+    return res.redirect("/home")
 }
 function deleteNote(req,res)
 {
@@ -38,7 +39,7 @@ function deleteNote(req,res)
 }
 function loginPage(req,res)
 {
-return res.render("login.html")
+return res.render("login.ejs")
 }
 function registerPage(req,res)
 {
@@ -98,7 +99,7 @@ const hashedUserPassword=undefined;
         else{
             if(result.rows[0])
             {
-                return res.send({redirect:"/login.html"})
+                return res.send({redirect:"/login.ejs"})
             }
             else{
                 let names=name.split(" ")
@@ -108,7 +109,7 @@ const hashedUserPassword=undefined;
                 }
                 const hashedUserPassword=hashPassword(password)
                 db.query("insert into users(first_name,last_name,email,user_password) values($1,$2,$3,$4)",[names[0],names[1],email,hashedUserPassword])
-                return res.send({redirect:"/login.html"})            }
+                return res.send({redirect:"/login.ejs"})            }
         }
     })
 }
@@ -116,6 +117,6 @@ function logout(req,res)
 {
     res.cookie("jwt",token,{maxAge:0})
     currentUser={}
-    return res.send("/home.html")
+    return res.send("/home.ejs")
 }
 module.exports={getAllNotes,addNote,deleteNote,loginPage,registerPage,register,login,logout,addNotePage,getNavPage}
