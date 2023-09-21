@@ -2,31 +2,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Note </title>
+    <title>add Note Page</title>
 </head>
 <body>
-    <textarea class="note"></textarea>
-    <button class="submit-btn">Submit</button>
-    <script>
-        const txtArea=document.querySelector(".note")
-        const btn=document.querySelector(".submit-btn")
-        btn.addEventListener("click",async function(){
-            if(!txtArea.value)
-            {
-                return
-            }
-            const obj={
-                text:txtArea.value
-            }
-            console.log(JSON.stringify(obj))
-await fetch('/addNotes',{
-    method:"POST",
-    headers:{
-        "Content-type":"application/json"
-    },
-    body:JSON.stringify(obj)
-})
-        })
-    </script>
+    <from>
+        <textarea class="txt-area"></textarea>
+        <button class="sub-btn">Submit</button>
+    </from>
 </body>
+<script>
+   
+</script>
 </html>

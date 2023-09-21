@@ -1,9 +1,15 @@
 const {db}=require("../database/database.js")
+const {render}=require("ejs")
 const {createJsonWebToken,maxLifeSpan,hashPassword,unHashPassword}=require("../utils/util.js")
 let token=undefined;
+let currentUser={}
+function getNavPage(req,res)
+{
+return res.render("./home.ejs")
+}
 function getAllNotes(req,res)
 {
-db.query("select * from notes",(err,result)=>{
+db.query("select * from notes where user_id = $1 ",[currentUser.id],(err,result)=>{
     if(err)
     {
         console.log(err)
@@ -14,15 +20,14 @@ return res.json(result.rows)
     }
 })
 }
+function addNotePage(req,res)
+{
+return res.render("./addNote.ejs")
+}
 function addNote(req,res)
 {
     const {text}=req.body
-    const user={}
-    db.query("select * from users where id=$1",[1],(err,result)=>{
-    user.id=result.rows[0].id
-    user.text=text
-    db.query("insert into notes(user_text,user_id) values($1,$2)",[user.text,user.id])
-    })
+    db.query("insert into notes(user_text,user_id) values($1,$2)",[text,currentUser.id])
     return res.redirect("/")
 }
 function deleteNote(req,res)
@@ -33,16 +38,16 @@ function deleteNote(req,res)
 }
 function loginPage(req,res)
 {
-return res.send("login.html")
+return res.render("login.html")
 }
 function registerPage(req,res)
 {
-return res.send("register.html")
+return res.render("register.ejs")
 }
 function login(req,res)
 {
     const {name,email,password}=req.body
-    console.log(req.body)
+
     if(!name || !email || !password)
     {
         return res.json({"mssg":"fill all fields"})
@@ -63,14 +68,15 @@ function login(req,res)
             
                if(email == user.email&&unHashPassword(password,user.password))
                {
+            currentUser=user
              token=createJsonWebToken(user.id)
              res.cookie('jwt',token, { maxAge: maxLifeSpan});
-                return res.send({redirect:"/home.html"})
+                return res.send({redirect:"/home.ejs"})
                }
                
             }
             else{
-                return res.send({redirect:"/register.html"})
+                return res.send({redirect:"/register.ejs"})
             }
     }
 })
@@ -109,6 +115,7 @@ const hashedUserPassword=undefined;
 function logout(req,res)
 {
     res.cookie("jwt",token,{maxAge:0})
+    currentUser={}
     return res.send("/home.html")
 }
-module.exports={getAllNotes,addNote,deleteNote,loginPage,registerPage,register,login,logout}
+module.exports={getAllNotes,addNote,deleteNote,loginPage,registerPage,register,login,logout,addNotePage,getNavPage}
