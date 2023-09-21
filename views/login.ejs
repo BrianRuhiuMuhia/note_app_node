@@ -35,8 +35,9 @@ const btn=document.querySelector(".submit-btn")
 if(checkFields(values))
 {
     postToServer(values).then((page)=>{
+    location.href=page["route"]
 
-        location.href="views/home.html"||page
+        
     })
 
 }
@@ -46,7 +47,7 @@ else{
         })
         async function postToServer(obj)
         {
-            const {redirect}=await fetch("/login",{
+            const page=await fetch("/login",{
                 method:"POST",
     headers:{
         "Content-type":"application/json"
@@ -54,7 +55,7 @@ else{
     body:JSON.stringify(obj)
             })          
             
-            return redirect
+            return await page.json()
         }
         function checkFields(obj)
         {

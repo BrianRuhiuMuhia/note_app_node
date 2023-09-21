@@ -37,7 +37,7 @@
 if(checkFields(values))
 {
     postToServer(values).then((page)=>{
-            location.href=page||"/login.ejs"
+            location.href=page["route"]
     })
 }
 else{
@@ -46,7 +46,7 @@ else{
         })
         async function postToServer(obj)
         {
-const {redirect} = await fetch("/register",{
+const page = await fetch("/register",{
                 method:"POST",
     headers:{
         "Content-type":"application/json"
@@ -54,7 +54,7 @@ const {redirect} = await fetch("/register",{
     body:JSON.stringify(obj)
             })
 
-return redirect;
+return await page.json();
         }
         function checkFields(obj)
         {

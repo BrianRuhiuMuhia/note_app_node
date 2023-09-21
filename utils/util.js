@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const maxLifeSpan=36000000
 function createJsonWebToken(id)
 {
-return jwt.sign({id},"keyboard",{expiresIn:maxLifeSpan})
+return jwt.sign({id},process.env.SECRET,{expiresIn:maxLifeSpan})
 }
 function hashPassword(userPassword)
 {
@@ -18,4 +18,8 @@ function unHashPassword(password,hashedPassword)
 {
     return bcrypt.compareSync(password,hashedPassword)
 }
-module.exports={createJsonWebToken,maxLifeSpan,hashPassword,unHashPassword}
+function removeCookie(cookieName,res)
+{
+    res.cookie("jwt",token,{maxAge:0})
+}
+module.exports={createJsonWebToken,maxLifeSpan,hashPassword,unHashPassword,removeCookie}
