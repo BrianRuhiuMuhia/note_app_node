@@ -2,14 +2,15 @@ const jwt=require("jsonwebtoken")
 const dotenv=require("dotenv")
 function authUser(req,res,next)
 {
-const token=res.cookie["jwt"]
+    const token=req.cookies.jwt
+   
 if(token)
 {
     jwt.verify(token,process.env.SECRET,(err,decToken)=>
     {
 if(err)
 {
-    res.redirect("./")
+  return  res.render("./login.ejs")
 }
 else{
     next()
@@ -17,7 +18,7 @@ else{
     })
 }
 else{
-    res.redirect("./")
+   return res.render("./login.ejs")
 }
 }
 module.exports={authUser}
