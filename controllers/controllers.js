@@ -4,7 +4,7 @@ let token=undefined;
 let currentUser={}
 function getNavPage(req,res)
 {
-return res.render("./index")
+return res.render("./home")
 }
 function getAllNotes(req,res)
 {
@@ -17,7 +17,8 @@ db.query("select * from notes where user_id = $1 ",[currentUser.id],(err,result)
     else{
         const data={
             user:currentUser,
-            result:result.rows
+            result:result.rows,
+            page:"./home.ejs"
         }
 return res.json(data)
     }
@@ -32,7 +33,7 @@ function addNote(req,res)
 
     const {text}=req.body
     db.query("insert into notes(user_text,user_id) values($1,$2)",[text,currentUser.id])
-    return res.send({"route":"./allNotes"})
+    return res.send({"route":"./home"})
 }
 function deleteNote(req,res)
 {
@@ -77,7 +78,8 @@ function login(req,res)
                const user={
                 id:result.rows[0].id,
                 email:result.rows[0].email,
-                password:result.rows[0].user_password
+                password:result.rows[0].user_password,
+                name:result.rows[0].name
                }
             
                if(email == user.email&&unHashPassword(password,user.password))

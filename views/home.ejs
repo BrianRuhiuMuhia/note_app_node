@@ -4,11 +4,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Notes</title>
 </head>
+<style>
+    body{
+        margin:0;
+        padding:0;
+        background-color: aliceblue;
+    }
+    .page{
+        display:flex;
+        flex-direction: column;
+        width:100%;
+        font-family:Arial, Helvetica, sans-serif;
+    }
+    .user-details{
+padding:0.5em;
+font-size: 2em;
+    }
+    .user-notes{
+   margin:0 auto;
+ 
+   width:80%;
+
+    }
+    .element{
+        display:flex;
+        flex-direction:row;
+        margin-block:1em;
+        border:solid 2px lime;
+        padding-block:1em;
+        font-size: 1.2em;
+        align-items:center;
+      justify-content: space-around;
+    }
+</style>
 <body>
+    <div class="page">
+    <div class="user-details"></div>
     <div class="user-notes"></div>
+    </div>
+ 
     <script>
         const userNotes=document.querySelector(".user-notes")
-        
+        const userDetails=document.querySelector(".user-details")
 async function getAllNotes()
 {
     const data=await fetch("/allNotes",{
@@ -17,9 +54,22 @@ async function getAllNotes()
     const result=await data.json()
     return result
 }
-getAllNotes().then((result)=>{
-userNotes.textContent=JSON.stringify(result)
+getAllNotes().then((obj)=>{
+    console.log(obj)
+displayNotesOnPage(obj['result'],userNotes)
+displayUserOnPage(obj['user'],userDetails)
 })
+function displayNotesOnPage(arr,page)
+{
+arr.forEach((element)=>{
+    const text='<div class="element">'+ element.user_text.substring(0,7).trim() + '<button class="deleteBtn">'+"Delete"+'</button>'+'<button class="updateBtn">'+"Update"+"</button>"+'<button class="viewBtn">'+"View"+"</button>"+"</div>"
+    page.innerHTML+=text;
+})
+}
+function displayUserOnPage(user,page)
+{
+page.textContent="Welcome back" +" "+ user["name"]
+}
 
     </script>
 </body>
