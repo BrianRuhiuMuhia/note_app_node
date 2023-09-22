@@ -18,7 +18,7 @@ function unHashPassword(password,hashedPassword)
 {
     return bcrypt.compareSync(password,hashedPassword)
 }
-function removeCookie(cookieName,res)
+function removeCookie(cookieName,res,token)
 {
     res.cookie("jwt",token,{maxAge:0})
 }

@@ -17,6 +17,9 @@ async function getAllNotes()
     const result=await data.json()
     return result
 }
+getAllNotes().then((result)=>{
+userNotes.textContent=JSON.stringify(result)
+})
 
     </script>
 </body>

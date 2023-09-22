@@ -15,7 +15,11 @@ db.query("select * from notes where user_id = $1 ",[currentUser.id],(err,result)
         return res.json({"mssg":"error"})
     }
     else{
-return res.json(result.rows)
+        const data={
+            user:currentUser,
+            result:result.rows
+        }
+return res.json(data)
     }
 })
 }
@@ -27,8 +31,8 @@ function addNote(req,res)
 {
 
     const {text}=req.body
-    db.query("insert into notes(user_text,user_id) values($1,$2)",[text,1])
-    return res.render("./home.ejs")
+    db.query("insert into notes(user_text,user_id) values($1,$2)",[text,currentUser.id])
+    return res.send({"route":"./allNotes"})
 }
 function deleteNote(req,res)
 {
@@ -38,6 +42,10 @@ function deleteNote(req,res)
 }
 function loginPage(req,res)
 {
+    if(token && currentUser!=null)
+    {
+        return res.render("./home")
+    }
 return res.render("./login")
 }
 function registerPage(req,res)
@@ -46,6 +54,10 @@ return res.render("./register")
 }
 function login(req,res)
 {
+    if(token && currentUser!=null)
+    {
+        return res.send({"route":"./addNote"})
+    }
     const {name,email,password}=req.body
 
     if(!name || !email || !password)
@@ -71,7 +83,7 @@ function login(req,res)
             currentUser=user
              token=createJsonWebToken(user.id)
              res.cookie('jwt',token, { maxAge: maxLifeSpan});
-                return res.send({"route":"./register"})
+                return res.send({"route":"./addNote"})
                }
                else{
                 return res.json({"err":"wrong password"})
@@ -122,7 +134,7 @@ const hashedUserPassword=undefined;
 }
 function logout(req,res)
 {
-   removeCookie("jwt",res)
+   removeCookie("jwt",res,token)
     currentUser={}
     return res.render("./login")
 }

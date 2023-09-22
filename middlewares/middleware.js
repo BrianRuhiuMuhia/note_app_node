@@ -1,4 +1,5 @@
 const jwt=require("jsonwebtoken")
+const dotenv=require("dotenv")
 function authUser(req,res,next)
 {
 const token=res.cookie["jwt"]

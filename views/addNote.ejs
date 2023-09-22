@@ -19,7 +19,10 @@
     obj["text"]=document.querySelector(".txt-area").value
   if(obj["text"])
   {
-    postToServer(obj)
+    postToServer(obj).then((page)=>{
+      location.href=page["route"]
+    })
+    
     return
   }
   else{
@@ -28,13 +31,14 @@
    })
    async function postToServer(obj)
    {
-    const {redirect} = await fetch("/addNote",{
+    const page = await fetch("/addNote",{
                 method:"POST",
     headers:{
         "Content-type":"application/json"
     },
     body:JSON.stringify(obj)
             })
+            return await page.json()
    }
 </script>
 </html>
