@@ -56,7 +56,9 @@ function login(req,res)
 {
     if(token && currentUser!=null)
     {
-        return res.send({"route":"./addNote"})
+        token=undefined
+        currentUser={}
+        return res.send({"route":"./"})
     }
     const {name,email,password}=req.body
 
@@ -135,6 +137,7 @@ const hashedUserPassword=undefined;
 function logout(req,res)
 {
    removeCookie("jwt",res,token)
+   token=undefined
     currentUser={}
     return res.render("./login")
 }
