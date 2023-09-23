@@ -36,6 +36,24 @@ font-size: 2em;
         align-items:center;
       justify-content: space-around;
     }
+    .text{
+        width:50px;
+    }
+    button{
+        width:80px;
+        border-radius: 10px;
+        padding:0.5em;
+        border-width:0;
+    }
+    .delBtn{
+background-color: red;
+    }
+    .viewBtn{
+background-color: lime;
+    }
+    .updateBtn{
+background-color: aqua;
+    }
 </style>
 <body>
     <div class="page">
@@ -46,6 +64,10 @@ font-size: 2em;
     <script>
         const userNotes=document.querySelector(".user-notes")
         const userDetails=document.querySelector(".user-details")
+        let details=undefined
+        let user=undefined;
+        let delBtns=undefined
+        
 async function getAllNotes()
 {
     const data=await fetch("/allNotes",{
@@ -55,22 +77,49 @@ async function getAllNotes()
     return result
 }
 getAllNotes().then((obj)=>{
-    console.log(obj)
-displayNotesOnPage(obj['result'],userNotes)
-displayUserOnPage(obj['user'],userDetails)
+
+details=obj["result"]
+user=obj["user"]
+displayNotesOnPage(details,userNotes)
+displayUserOnPage(user,userDetails)
 })
 function displayNotesOnPage(arr,page)
 {
 arr.forEach((element)=>{
-    const text='<div class="element">'+ element.user_text.substring(0,7).trim() + '<button class="deleteBtn">'+"Delete"+'</button>'+'<button class="updateBtn">'+"Update"+"</button>"+'<button class="viewBtn">'+"View"+"</button>"+"</div>"
+    const text='<div class="element">'+ '<span class="text">'+element.user_text+'</span>' + '<button class="delBtn">'+"Delete"+'</button>'+'<button class="updateBtn">'+"Update"+"</button>"+'<button class="viewBtn">'+"View"+"</button>"+"</div>"
     page.innerHTML+=text;
 })
+delBtns=document.querySelectorAll(".delBtn")
+btnDelete()
 }
 function displayUserOnPage(user,page)
 {
 page.textContent="Welcome back" +" "+ user["name"]
 }
-
+function btnDelete()
+{
+    delBtns.forEach((element,index)=>{
+    element.addEventListener('click',function(event)
+    {
+event.preventDefault()
+deleteFromServer(index).then((page)=>{
+    location.href=page["route"]
+})
+    })
+})
+}
+async function deleteFromServer(id)
+{
+  const record=details[id]
+   const page= await fetch(`/${record["id"]}`,{
+    method:"DELETE",
+    headers:{
+        "Content-type":"application/json"
+    },
+    body:JSON.stringify(record)
+})
+return await page.json()
+}
     </script>
 </body>
 </html>

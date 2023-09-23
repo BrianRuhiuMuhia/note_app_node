@@ -39,7 +39,7 @@ function deleteNote(req,res)
 {
     const {id}=req.params
     db.query("delete from notes where id = $1",[id])
-    return res.redirect("/")
+    return res.send({"route":"./home"})
 }
 function loginPage(req,res)
 {
