@@ -9,10 +9,17 @@
         margin:0;
         padding:0;
         background-color: aliceblue;
+        display:flex;
+        flex-direction: column;
+        font-size: 1.2em;
+    }
+    h1,h2,h3,h4{
+        margin:0;
+        padding:0;
     }
     .page{
         display:flex;
-        flex-direction: column;
+        flex-direction: row;
         width:100%;
         font-family:Arial, Helvetica, sans-serif;
     }
@@ -32,7 +39,7 @@ font-size: 2em;
         margin-block:1em;
         border:solid 2px lime;
         padding-block:1em;
-        font-size: 1.2em;
+      
         align-items:center;
       justify-content: space-around;
     }
@@ -55,14 +62,34 @@ background-color: lime;
 background-color: aqua;
     }
     .view-page{
-
+position:absolute;
+width:50%;
+left:70%;
+height:200px;
+transform:translate(-50%,-50%);
+bottom:0%;
+background-color: white;
+border-radius: 10px;
+-webkit-box-shadow: 5px 5px 0px 0px #289FED, 10px 10px 0px 0px #5FB8FF, 15px 15px 0px 0px #A1D8FF, 20px 20px 0px 0px #CAE6FF, 25px 25px 0px 0px #E1EEFF, 5px 5px 15px 5px rgba(0,0,0,0); 
+box-shadow: 5px 5px 0px 0px #289FED, 10px 10px 0px 0px #5FB8FF, 15px 15px 0px 0px #A1D8FF, 20px 20px 0px 0px #CAE6FF, 25px 25px 0px 0px #E1EEFF, 5px 5px 15px 5px rgba(0,0,0,0);
+padding:1em;
     }
     .hidden{
         display:none;
     }
     .visible{
-        
+        display:block;
     }
+    .update-form{
+        display:flex;
+        width:200px;
+        height:200px;
+padding:1em;
+        flex-direction:column;
+        gap:0.5em;
+        border:solid 2px black;
+    }
+
 </style>
 <body>
     <div class="page">
@@ -70,15 +97,27 @@ background-color: aqua;
     <div class="user-notes"></div>
     </div>
     <div class="view-page">
-        <div class="user-details"></div>
-        <div class="user-notes"></div>
+        <span class="title"></span>
+        <p class="view-text"></p>
+        </div>
+        <div>
+            <form class="update-form">
+                <h4>Update Note</h4>
+                <label>Title</label>
+                <input type="text" class="update-title">
+                <label>Text</label>
+                <textarea></textarea>
+                <button class="updateBtn">Submit</button>
+            </form>
         </div>
     <script>
         const userNotes=document.querySelector(".user-notes")
         const userDetails=document.querySelector(".user-details")
+        const userText=document.querySelector(".text")
         let details=undefined
         let user=undefined;
         let delBtns=undefined
+        let viewBtn=undefined
         
 async function getAllNotes()
 {
@@ -102,7 +141,9 @@ arr.forEach((element)=>{
     page.innerHTML+=text;
 })
 delBtns=document.querySelectorAll(".delBtn")
+viewBtn=document.querySelectorAll(".viewBtn")
 btnDelete()
+addUserView()
 }
 function displayUserOnPage(user,page)
 {
@@ -131,6 +172,20 @@ async function deleteFromServer(id)
     body:JSON.stringify(record)
 })
 return await page.json()
+}
+function addUserView()
+{
+    let viewTitle=document.querySelector(".title")
+    let viewPage=document.querySelector(".view-text")
+    console.log(viewPage)
+    viewBtn.forEach((btn,index)=>{
+        btn.addEventListener("click",function(event)
+        {
+event.preventDefault()
+viewTitle.textContent=details[index]["title"]
+viewPage.textContent=details[index]["text"]
+        })
+    })
 }
     </script>
 </body>
