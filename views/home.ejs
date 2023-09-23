@@ -54,13 +54,25 @@ background-color: lime;
     .updateBtn{
 background-color: aqua;
     }
+    .view-page{
+
+    }
+    .hidden{
+        display:none;
+    }
+    .visible{
+        
+    }
 </style>
 <body>
     <div class="page">
     <div class="user-details"></div>
     <div class="user-notes"></div>
     </div>
- 
+    <div class="view-page">
+        <div class="user-details"></div>
+        <div class="user-notes"></div>
+        </div>
     <script>
         const userNotes=document.querySelector(".user-notes")
         const userDetails=document.querySelector(".user-details")
@@ -86,7 +98,7 @@ displayUserOnPage(user,userDetails)
 function displayNotesOnPage(arr,page)
 {
 arr.forEach((element)=>{
-    const text='<div class="element">'+ '<span class="text">'+element.user_text+'</span>' + '<button class="delBtn">'+"Delete"+'</button>'+'<button class="updateBtn">'+"Update"+"</button>"+'<button class="viewBtn">'+"View"+"</button>"+"</div>"
+    const text='<div class="element">'+ '<span class="text">'+element.title+'</span>' + '<button class="delBtn">'+"Delete"+'</button>'+'<button class="updateBtn">'+"Update"+"</button>"+'<button class="viewBtn">'+"View"+"</button>"+"</div>"
     page.innerHTML+=text;
 })
 delBtns=document.querySelectorAll(".delBtn")

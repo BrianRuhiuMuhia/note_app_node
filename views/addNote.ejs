@@ -6,6 +6,9 @@
 </head>
 <body>
     <from>
+      <label>Title</label>
+      <input type="text" class="txt-title">
+      <label>Text</label>
         <textarea class="txt-area"></textarea>
         <button class="sub-btn">Submit</button>
     </from>
@@ -16,6 +19,7 @@
    subBtn.addEventListener("click",function(event)
    {
     event.preventDefault()
+    obj["title"]=document.querySelector(".txt-title").value
     obj["text"]=document.querySelector(".txt-area").value
   if(obj["text"])
   {

@@ -31,8 +31,8 @@ return res.render("./addNote")
 function addNote(req,res)
 {
 
-    const {text}=req.body
-    db.query("insert into notes(user_text,user_id) values($1,$2)",[text,currentUser.id])
+    const {title,text}=req.body
+    db.query("insert into notes(text,title,user_id) values($1,$2,$3)",[text,title,currentUser.id])
     return res.send({"route":"./home"})
 }
 function deleteNote(req,res)
