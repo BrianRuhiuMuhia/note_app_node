@@ -6,9 +6,9 @@ function getNavPage(req,res)
 {
 return res.render("./home")
 }
-function getAllNotes(req,res)
+async function getAllNotes(req,res)
 {
-db.query("select * from notes where user_id = $1 ",[currentUser.id],(err,result)=>{
+await db.query("select * from notes where user_id = $1 ",[currentUser.id],(err,result)=>{
     if(err)
     {
         console.log(err)
@@ -28,11 +28,11 @@ function addNotePage(req,res)
 {
 return res.render("./addNote")
 }
-function addNote(req,res)
+async function addNote(req,res)
 {
 
     const {title,text}=req.body
-    db.query("insert into notes(text,title,user_id) values($1,$2,$3)",[text,title,currentUser.id])
+    await db.query("insert into notes(text,title,user_id) values($1,$2,$3)",[text,title,currentUser.id])
     return res.send({"route":"./home"})
 }
 function deleteNote(req,res)
@@ -53,7 +53,7 @@ function registerPage(req,res)
 {
 return res.render("./register")
 }
-function login(req,res)
+async function login(req,res)
 {
     if(token && currentUser!=null)
     {
@@ -67,7 +67,7 @@ function login(req,res)
     {
         return res.json({"mssg":"fill all fields"})
     }
-    db.query("select * from users where email= $1",[email],(err,result)=>{
+   await db.query("select * from users where email= $1",[email],(err,result)=>{
         if(err)
         {
             console.log(err)
@@ -100,7 +100,7 @@ function login(req,res)
     }
 })
 }
-function register(req,res)
+async function register(req,res)
 {
     if(token)
     {
@@ -113,7 +113,7 @@ function register(req,res)
         return res.json({"mssg":"fill all fields"})
     }
 const hashedUserPassword=undefined;
-    db.query("select * from users where email= $1",[email],(err,result)=>
+   await db.query("select * from users where email= $1",[email],async (err,result)=>
     {
         if(err)
         {
@@ -131,7 +131,7 @@ const hashedUserPassword=undefined;
                     return res.json({"mssg":"passwords don't match"})
                 }
                 const hashedUserPassword=hashPassword(password)
-                db.query("insert into users(name,email,user_password) values($1,$2,$3)",[name,email,hashedUserPassword])
+            await db.query("insert into users(name,email,user_password) values($1,$2,$3)",[name,email,hashedUserPassword])
                 return res.json({"route":"./"})           }
         }
     })
