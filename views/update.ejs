@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<style>
+.page-loader{
+  display:block;
+  position:absolute;
+  top:0%;
+  left:0%;
+  width:100%;
+  height:100%;
+display:flex;
+align-items: center;
+justify-content: center;
+background-color: white;
+}
+.hidden{
+  display:none
+}
+.spinner {
+   width: 56px;
+   height: 56px;
+   display: grid;
+   animation: spinner-plncf9 4s infinite;
+}
+
+.spinner::before,
+.spinner::after {
+   content: "";
+   grid-area: 1/1;
+   border: 9px solid;
+   border-radius: 50%;
+   border-color: #474bff #474bff #0000 #0000;
+   mix-blend-mode: darken;
+   animation: spinner-plncf9 1s infinite linear;
+}
+
+.spinner::after {
+   border-color: #0000 #0000 #dbdcef #dbdcef;
+   animation-direction: reverse;
+}
+
+@keyframes spinner-plncf9 {
+   100% {
+      transform: rotate(1turn);
+   }
+}
+
+</style>
+  </head>
+<body>
+    <div class="page-content d-flex justify-content-center">
+        <from class="w-75">
+          <label>Title</label>
+          <input type="text" class="txt-title form-control">
+          <label>Text</label>
+            <textarea class="txt-area form-control" rows="10"></textarea>
+            <button class="sub-btn btn btn-primary mt-4">Submit</button>
+        </from>
+      </div>
+      <div class="page-loader">
+        <div class="spinner"></div>
+      </div>
+</body>
+<script>
+  const text=document.querySelector(".txt-title")
+  const txtArea=document.querySelector(".txt-area")
+  const subBtn=document.querySelector(".sub-btn")
+  const pageLoader=document.querySelector(".page-loader")
+
+ function getUrl()
+ {
+  var url = window.location.href;
+var splitUrl = url.split('/');
+var number = splitUrl[splitUrl.length - 1];
+return number
+ }
+ async function getData()
+ {
+  const url=`http://localhost:5000/note/${getUrl()}`
+const data=await fetch(url,{
+  method:"GET"
+})
+const response=await data.json()
+return response
+ }
+getData().then((data)=>{
+text.value=data["title"]
+txtArea.textContent=data['text']
+pageLoader.classList.add("hidden")
+})
+async function updateServer()
+{
+  obj={}
+  obj["title"]=text.value
+  obj["text"]=txtArea.value
+  const url=`http://localhost:5000/note/${getUrl()}`
+  await fetch(url,{method:"PUT",
+  headers:{
+        "Content-type":"application/json"
+    },
+    body:JSON.stringify(obj)})
+  
+}
+subBtn.addEventListener("click",async function()
+{
+  await updateServer()
+  location.href="/home"
+})
+</script>
+</html>

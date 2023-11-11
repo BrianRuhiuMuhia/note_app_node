@@ -3,15 +3,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>add Note Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <body>
-    <from>
+  <div class="d-flex justify-content-center container">
+    <from class="w-75">
       <label>Title</label>
-      <input type="text" class="txt-title">
+      <input type="text" class="txt-title form-control">
       <label>Text</label>
-        <textarea class="txt-area"></textarea>
-        <button class="sub-btn">Submit</button>
+        <textarea class="txt-area form-control" rows="10"></textarea>
+        <button class="sub-btn btn btn-primary mt-4">Submit</button>
     </from>
+  </div>
+    
 </body>
 <script>
    const subBtn=document.querySelector(".sub-btn")
@@ -45,4 +49,5 @@
             return await page.json()
    }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </html>

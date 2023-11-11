@@ -1,6 +1,6 @@
 const express=require("express")
 const routes=express.Router()
-const {getAllNotes,addNote,deleteNote, loginPage,getNavPage ,registerPage,register,login,logout, addNotePage
+const {getAllNotes,addNote,deleteNote, loginPage,getNavPage ,registerPage,register,login,logout, addNotePage, forgotPasswordPage, forgotPassword, updatePage, getNote, updateNote,downloadNote,resetPassword,resetUserPassword
 }=require("../controllers/controllers.js")
 const {authUser}=require("../middlewares/middleware.js")
 routes.get("/allNotes",authUser,getAllNotes)
@@ -13,4 +13,12 @@ routes.get("/register",registerPage)
 routes.post("/register",register)
 routes.post("/login",login)
 routes.get("/logout",logout)
+routes.get("/forgotpassword",forgotPasswordPage)
+routes.post("/forgotpassword",forgotPassword)
+routes.get("/resetpassword",resetPassword)
+routes.post("/resetpassword",resetUserPassword)
+routes.get("/update/:id",updatePage)
+routes.get("/note/:id",getNote)
+routes.put("/note/:id",updateNote)
+routes.get("/download/:id",downloadNote)
 module.exports={routes}

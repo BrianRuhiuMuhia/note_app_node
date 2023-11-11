@@ -3,39 +3,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Notes</title>
-</head>
-<style>
-  
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+     
+        .page{
+            display:flex;
+            flex-direction: column;
+            gap:1em;
+        }
+       
+        .user-notes div{
+display:flex;
+flex-direction: row;
+justify-content: space-between;
+margin-block:0.5em;
+        }
+      .user-notes{
+        padding:0.5em;
+        margin:1em;
+      }
+        .btn{
+            margin-inline:0.5em;
+        }
+        .view-page{
+            width:90%;
+            background-color: aliceblue;
+            display:flex;
+            flex-direction: column;
+            align-items: flex-start;
+            
+         
+        }
+        .view{
+            display:flex;
+            justify-content: center;
+            align-items: center;
+        }
+.view-text{
+    padding:0.5em;
+}
+.title{
+    font-size: large;
+}
+.hidden{
+    display:none;
+}
+.download-btn{
+    margin:0.5em;
 
-</style>
+}
+    </style>
+</head>
 <body>
-    <div class="page">
+    <div class="page container">
     <div class="user-details"></div>
-    <div class="user-notes"></div>
+    <div class="notes">
+        <div class="user-notes shadow-sm p-3 mb-5 bg-body-tertiary rounded">
+             </div><div class="view hidden shadow p-3 mb-5 bg-body-tertiary rounded">
+                <div class="view-page">
+             <span class="title"></span>
+            <hr>
+             <p class="view-text"></p></div>
+        </div>
+             </div>
+       
     </div>
-    <div class="view-page">
-        <span class="title"></span>
-        <p class="view-text"></p>
-        </div>
-        <div>
-            <form class="update-form">
-                <h4>Update Note</h4>
-                <label>Title</label>
-                <input type="text" class="update-title">
-                <label>Text</label>
-                <textarea></textarea>
-                <button class="updateBtn">Submit</button>
-            </form>
-        </div>
+
     <script>
         const userNotes=document.querySelector(".user-notes")
         const userDetails=document.querySelector(".user-details")
         const userText=document.querySelector(".text")
-        let details=undefined
+        const view=document.querySelector(".view");
+        let details=undefined;
         let user=undefined;
-        let delBtns=undefined
-        let viewBtn=undefined
-        
+        let delBtns=undefined;
+        let viewBtn=undefined;
+        let updateBtn=undefined;
+        let downloadButton=undefined;
+        let downloadButtons=undefined;
 async function getAllNotes()
 {
     const data=await fetch("/allNotes",{
@@ -54,13 +99,32 @@ displayUserOnPage(user,userDetails)
 function displayNotesOnPage(arr,page)
 {
 arr.forEach((element)=>{
-    const text='<div class="element">'+ '<span class="text">'+element.title+'</span>' + '<button class="delBtn">'+"Delete"+'</button>'+'<button class="updateBtn">'+"Update"+"</button>"+'<button class="viewBtn">'+"View"+"</button>"+"</div>"
+    const text='<div class="element">'+ '<span class="text">'+element.title+'</span>' +'<div " class="btns">' +'<button class="delBtn btn btn-danger">'+"Delete"+'</button>'+'<button class="updateBtn btn btn-primary">'+"Update"+"</button>"+'<button class="viewBtn btn btn-success">'+"View"+"</button>"+"</div>" +"</div>"
     page.innerHTML+=text;
 })
 delBtns=document.querySelectorAll(".delBtn")
 viewBtn=document.querySelectorAll(".viewBtn")
+updateBtn=document.querySelectorAll(".updateBtn")
 btnDelete()
 addUserView()
+update()
+
+}
+async function updateServer(index)
+{
+ const id=details[index]["id"]
+    await fetch(`/update/${id}`,{method:"get"})
+    location.href=`/update/${id}`
+
+}
+function update()
+{
+    updateBtn.forEach((btn,index)=>{
+btn.addEventListener("click",async function(e)
+{
+await updateServer(index)
+})
+    })
 }
 function displayUserOnPage(user,page)
 {
@@ -94,16 +158,40 @@ function addUserView()
 {
     let viewTitle=document.querySelector(".title")
     let viewPage=document.querySelector(".view-text")
-    console.log(viewPage)
+
     viewBtn.forEach((btn,index)=>{
-        btn.addEventListener("click",function(event)
+        btn.addEventListener("click",async function(event)
         {
 event.preventDefault()
 viewTitle.textContent=details[index]["title"]
-viewPage.textContent=details[index]["text"]
-        })
+viewPage.innerHTML = '<div>' + details[index]["text"] + '</div>';
+downloadButton=document.createElement("button");
+downloadButton.className="btn btn-primary download-btn"
+downloadButton.textContent="Download"
+viewPage.appendChild(downloadButton)
+view.classList.toggle("hidden")
+downloadButton.addEventListener('click', async function(e) {
+                // downloadNote(details[index]);
+                await fetch(`./download/${details[index]["id"]}`,{
+                    method:"get"
+                })
+
+            });
+})
+//
     })
+    
+}
+function downloadNote(note) {
+    const blob = new Blob([note["text"]], {type: 'text/plain'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = note["title"] + '.txt';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
     </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
